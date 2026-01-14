@@ -1,4 +1,4 @@
-import 'package:conquistadores_app/funcionalidades/autenticacion/dominio/entidades/repositorio_autenticacion.dart';
+import 'package:conquistadores_app/funcionalidades/autenticacion/dominio/repositorio_autenticacion.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginUsuario {

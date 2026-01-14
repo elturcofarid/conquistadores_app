@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await inicializarDependencias(); // ← ESTO ES CLAVE
+  print(sl.isRegistered<AutenticacionBloc>()); // debe imprimir true
   runApp(const WorldRankApp());
 }
 

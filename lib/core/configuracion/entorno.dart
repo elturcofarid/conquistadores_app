@@ -6,9 +6,9 @@ class ConfiguracionEntorno {
   static String get baseUrl {
     switch (entorno) {
       case Entorno.produccion:
-        return 'https://api.worldrank.com/api/v1';
+        return 'http://192.168.1.134:8082/api/v1';
       default:
-        return 'http://localhost:8080/api/v1';
+        return 'http://192.168.1.134:8082/api/v1';
     }
   }
 }

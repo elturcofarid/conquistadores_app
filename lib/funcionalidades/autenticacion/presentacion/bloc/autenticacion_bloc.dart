@@ -24,16 +24,22 @@ class AutenticacionBloc
   ) async {
     emit(AutenticacionCargando());
 
+ print('email: ${event.email}, password: ${event.password}');
+
     try {
       final token = await loginUsuario.ejecutar(
         event.email,
         event.password,
       );
 
+      print(token);
+      print('Token recibido: $token');
+
       await storage.write(key: 'access_token', value: token);
 
       emit(AutenticacionExitosa(token));
     } catch (e) {
+      print(  'Error durante el login: $e');
       emit(const AutenticacionError(
         'Credenciales inválidas o error de conexión',
       ));
