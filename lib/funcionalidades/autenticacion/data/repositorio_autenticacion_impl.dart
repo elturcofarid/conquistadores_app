@@ -13,6 +13,9 @@ class RepositorioAutenticacionImpl implements RepositorioAutenticacion {
     required String email,
     required String password,
   }) async {
+    print('Intentando login con email: $email');
+    print('URL base: ${dio.options.baseUrl}');
+    print('Endpoint completo: ${dio.options.baseUrl}/auth/login');
     final response = await dio.post(
       '/auth/login',
       data: {
@@ -21,6 +24,7 @@ class RepositorioAutenticacionImpl implements RepositorioAutenticacion {
       },
     );
 
+    print('Respuesta recibida: ${response.data}');
     return response.data['accessToken'];
   }
   

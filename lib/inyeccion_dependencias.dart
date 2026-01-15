@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 
+import 'core/configuracion/entorno.dart';
 import 'funcionalidades/autenticacion/data/repositorio_autenticacion_impl.dart';
 import 'funcionalidades/autenticacion/dominio/repositorio_autenticacion.dart';
 import 'funcionalidades/autenticacion/dominio/casos_uso/login_usuario.dart';
@@ -25,7 +26,7 @@ Future<void> inicializarDependencias() async {
   sl.registerLazySingleton<Dio>(() {
     final dio = Dio(
       BaseOptions(
-        baseUrl: 'http://10.0.2.2:8082/api/v1', // ANDROID EMULATOR
+        baseUrl: ConfiguracionEntorno.baseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         headers: {
