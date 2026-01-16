@@ -22,10 +22,22 @@ class HomePagina extends StatelessWidget {
           ),
         ],
       ),
-      body: const Center(
-        child: Text(
-          'Bienvenido a WorldRank 🌍',
-          style: TextStyle(fontSize: 18),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Bienvenido a WorldRank 🌍',
+              style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/perfil');
+              },
+              child: const Text('Ver Perfil'),
+            ),
+          ],
         ),
       ),
     );

@@ -1,14 +1,20 @@
 
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class InterceptorJwt extends Interceptor {
-  final _storage = const FlutterSecureStorage();
+  final SharedPreferences storage;
+
+  InterceptorJwt(this.storage);
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    final token = await _storage.read(key: 'access_token');
+    
+    if (options.path.startsWith('/auth')) {
+      return handler.next(options);
+    }
+
+    final token = storage.getString('access_token');
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
     }

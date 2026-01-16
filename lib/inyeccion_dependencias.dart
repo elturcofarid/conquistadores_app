@@ -4,10 +4,15 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/configuracion/entorno.dart';
+import 'core/red/interceptor_jwt.dart';
 import 'funcionalidades/autenticacion/data/repositorio_autenticacion_impl.dart';
 import 'funcionalidades/autenticacion/dominio/repositorio_autenticacion.dart';
 import 'funcionalidades/autenticacion/dominio/casos_uso/login_usuario.dart';
 import 'funcionalidades/autenticacion/presentacion/bloc/autenticacion_bloc.dart';
+import 'funcionalidades/perfil/data/repositorio_perfil_impl.dart';
+import 'funcionalidades/perfil/dominio/repositorio_perfil.dart';
+import 'funcionalidades/perfil/dominio/casos_uso/obtener_perfil_usuario.dart';
+import 'funcionalidades/perfil/presentacion/bloc/perfil_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -43,8 +48,7 @@ Future<void> inicializarDependencias() async {
      ),
    );
 
-   // Add JWT interceptor after SharedPreferences is ready
-   // This will be added later when SharedPreferences is available
+   dio.interceptors.add(InterceptorJwt(prefs));
 
    return dio;
  });
@@ -58,12 +62,20 @@ Future<void> inicializarDependencias() async {
     ),
   );
 
+  sl.registerLazySingleton<RepositorioPerfil>(
+    () => RepositorioPerfilImpl(sl<Dio>()),
+  );
+
   // ---------------------------------------------------------------------------
   // CASOS DE USO
   // ---------------------------------------------------------------------------
 
   sl.registerLazySingleton(
     () => LoginUsuario(sl<RepositorioAutenticacion>()),
+  );
+
+  sl.registerLazySingleton(
+    () => ObtenerPerfilUsuario(sl<RepositorioPerfil>()),
   );
 
   // ---------------------------------------------------------------------------
@@ -75,5 +87,9 @@ Future<void> inicializarDependencias() async {
       loginUsuario: sl<LoginUsuario>(),
       storage: sl<SharedPreferences>(),
     ),
+  );
+
+  sl.registerFactory(
+    () => PerfilBloc(sl<ObtenerPerfilUsuario>()),
   );
 }
