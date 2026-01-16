@@ -1,10 +1,10 @@
 import 'package:conquistadores_app/funcionalidades/autenticacion/dominio/repositorio_autenticacion.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RepositorioAutenticacionImpl implements RepositorioAutenticacion {
   final Dio dio;
-  final FlutterSecureStorage storage;
+  final SharedPreferences storage;
 
   RepositorioAutenticacionImpl(this.dio, this.storage);
 

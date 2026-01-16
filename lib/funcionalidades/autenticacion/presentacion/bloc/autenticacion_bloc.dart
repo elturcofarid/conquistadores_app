@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'autenticacion_evento.dart';
 import 'autenticacion_estado.dart';
 import '../../dominio/casos_uso/login_usuario.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AutenticacionBloc
     extends Bloc<AutenticacionEvento, AutenticacionEstado> {
   final LoginUsuario loginUsuario;
-  final FlutterSecureStorage storage;
+  final SharedPreferences storage;
 
   AutenticacionBloc({
     required this.loginUsuario,
@@ -35,7 +35,7 @@ class AutenticacionBloc
       print(token);
       print('Token recibido: $token');
 
-      await storage.write(key: 'access_token', value: token);
+      await storage.setString('access_token', token);
 
       emit(AutenticacionExitosa(token));
     } catch (e) {
@@ -50,7 +50,7 @@ class AutenticacionBloc
     LogoutSolicitado event,
     Emitter<AutenticacionEstado> emit,
   ) async {
-    await storage.delete(key: 'access_token');
+    await storage.remove('access_token');
     emit(AutenticacionNoAutenticada());
   }
 }
