@@ -37,6 +37,13 @@ class HomePagina extends StatelessWidget {
               },
               child: const Text('Ver Perfil'),
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/crear-publicacion');
+              },
+              child: const Text('Crear Publicación'),
+            ),
           ],
         ),
       ),

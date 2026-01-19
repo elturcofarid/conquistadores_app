@@ -13,6 +13,10 @@ import 'funcionalidades/perfil/data/repositorio_perfil_impl.dart';
 import 'funcionalidades/perfil/dominio/repositorio_perfil.dart';
 import 'funcionalidades/perfil/dominio/casos_uso/obtener_perfil_usuario.dart';
 import 'funcionalidades/perfil/presentacion/bloc/perfil_bloc.dart';
+import 'funcionalidades/publicaciones/data/repositorio_publicacion_impl.dart';
+import 'funcionalidades/publicaciones/dominio/repositorio_publicacion.dart';
+import 'funcionalidades/publicaciones/dominio/casos_uso/crear_publicacion.dart';
+import 'funcionalidades/publicaciones/presentacion/bloc/publicacion_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -66,6 +70,10 @@ Future<void> inicializarDependencias() async {
     () => RepositorioPerfilImpl(sl<Dio>()),
   );
 
+  sl.registerLazySingleton<RepositorioPublicacion>(
+    () => RepositorioPublicacionImpl(sl<Dio>()),
+  );
+
   // ---------------------------------------------------------------------------
   // CASOS DE USO
   // ---------------------------------------------------------------------------
@@ -76,6 +84,10 @@ Future<void> inicializarDependencias() async {
 
   sl.registerLazySingleton(
     () => ObtenerPerfilUsuario(sl<RepositorioPerfil>()),
+  );
+
+  sl.registerLazySingleton(
+    () => CrearPublicacion(sl<RepositorioPublicacion>()),
   );
 
   // ---------------------------------------------------------------------------
@@ -91,5 +103,9 @@ Future<void> inicializarDependencias() async {
 
   sl.registerFactory(
     () => PerfilBloc(sl<ObtenerPerfilUsuario>()),
+  );
+
+  sl.registerFactory(
+    () => PublicacionBloc(crearPublicacion: sl<CrearPublicacion>()),
   );
 }

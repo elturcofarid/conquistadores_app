@@ -11,7 +11,7 @@ class RepositorioPerfilImpl implements RepositorioPerfil {
 
   @override
   Future<Perfil> obtenerPerfilUsuario() async {
-    final response = await dio.get('/users/me');
+    final response = await dio.get('/v1/users/me');
     return PerfilModel.fromJson(response.data);
   }
 }

@@ -52,5 +52,11 @@
 	</dict>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Necesitamos acceder a la red local para comunicarnos con el backend</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Esta app necesita acceso a la cámara para tomar fotos</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Esta app necesita acceso a la galería para seleccionar fotos</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Esta app necesita acceso a la ubicación para geolocalizar las fotos tomadas</string>
 </dict>
 </plist>
