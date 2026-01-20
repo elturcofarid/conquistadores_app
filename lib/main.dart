@@ -3,6 +3,7 @@ import 'package:conquistadores_app/funcionalidades/autenticacion/presentacion/pa
 import 'package:conquistadores_app/funcionalidades/autenticacion/presentacion/paginas/login_pagina.dart';
 import 'package:conquistadores_app/funcionalidades/perfil/presentacion/paginas/perfil_pagina.dart';
 import 'package:conquistadores_app/funcionalidades/publicaciones/presentacion/bloc/publicacion_bloc.dart';
+import 'package:conquistadores_app/funcionalidades/publicaciones/presentacion/bloc/publicaciones_list_bloc.dart';
 import 'package:conquistadores_app/funcionalidades/publicaciones/presentacion/paginas/crear_publicacion_pagina.dart';
 import 'package:conquistadores_app/inyeccion_dependencias.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,9 @@ class WorldRankApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => sl<PublicacionBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<PublicacionesListBloc>(),
         ),
       ],
       child: MaterialApp(

@@ -28,7 +28,7 @@ class CrearPublicacionPagina extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Publicación creada exitosamente')),
               );
-              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, '/home');
             });
             return const SizedBox.shrink();
           }

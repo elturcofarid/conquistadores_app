@@ -16,7 +16,9 @@ import 'funcionalidades/perfil/presentacion/bloc/perfil_bloc.dart';
 import 'funcionalidades/publicaciones/data/repositorio_publicacion_impl.dart';
 import 'funcionalidades/publicaciones/dominio/repositorio_publicacion.dart';
 import 'funcionalidades/publicaciones/dominio/casos_uso/crear_publicacion.dart';
+import 'funcionalidades/publicaciones/dominio/casos_uso/obtener_publicaciones.dart';
 import 'funcionalidades/publicaciones/presentacion/bloc/publicacion_bloc.dart';
+import 'funcionalidades/publicaciones/presentacion/bloc/publicaciones_list_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -90,6 +92,10 @@ Future<void> inicializarDependencias() async {
     () => CrearPublicacion(sl<RepositorioPublicacion>()),
   );
 
+  sl.registerLazySingleton(
+    () => ObtenerPublicaciones(sl<RepositorioPublicacion>()),
+  );
+
   // ---------------------------------------------------------------------------
   // BLOCS
   // ---------------------------------------------------------------------------
@@ -107,5 +113,9 @@ Future<void> inicializarDependencias() async {
 
   sl.registerFactory(
     () => PublicacionBloc(crearPublicacion: sl<CrearPublicacion>()),
+  );
+
+  sl.registerFactory(
+    () => PublicacionesListBloc(obtenerPublicaciones: sl<ObtenerPublicaciones>()),
   );
 }
