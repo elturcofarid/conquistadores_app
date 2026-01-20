@@ -34,6 +34,7 @@ class WorldRankApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         routes: {
           '/login': (_) => const LoginPagina(),
           '/home': (_) => const HomePagina(),
