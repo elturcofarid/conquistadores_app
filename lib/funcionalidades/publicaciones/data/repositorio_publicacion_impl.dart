@@ -24,7 +24,7 @@ class RepositorioPublicacionImpl implements RepositorioPublicacion {
     print('Longitud: $longitud');
     print('Latitud: $latitud');
     print('Imagen Base64 length: ${imagenBase64.length}');
-    final response = await dio.post('/api/publicaciones', data: request.toJson());
+    final response = await dio.post('/publicaciones', data: request.toJson());
     print('Respuesta del backend: ${response.statusCode}');
     return PublicacionModel.fromJson(response.data);
   }

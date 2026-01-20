@@ -33,19 +33,49 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       try {
         final fileBytes = await File(pickedFile.path).readAsBytes();
         final data = await readExifFromBytes(fileBytes);
+        print('EXIF data keys: ${data.keys}');
         if (data.containsKey('GPS GPSLatitude') && data.containsKey('GPS GPSLongitude')) {
           final latRef = data['GPS GPSLatitudeRef']?.printable ?? 'N';
           final lonRef = data['GPS GPSLongitudeRef']?.printable ?? 'E';
           final latValues = data['GPS GPSLatitude']?.values as List?;
           final lonValues = data['GPS GPSLongitude']?.values as List?;
+          print('Lat values: $latValues, Lon values: $lonValues');
           if (latValues != null && lonValues != null && latValues.length >= 3 && lonValues.length >= 3) {
             lat = _convertToDecimal(latValues, latRef);
             long = _convertToDecimal(lonValues, lonRef);
+            print('GPS from EXIF: lat=$lat, long=$long');
           }
+        } else {
+          print('No GPS in EXIF');
         }
       } catch (e) {
-        // Ignore EXIF error
+        print('Error reading EXIF: $e');
       }
+
+      // If no GPS from EXIF, try to get current location
+      if (lat == null || long == null) {
+        print('Trying to get current location');
+        try {
+          LocationPermission permission = await Geolocator.checkPermission();
+          if (permission == LocationPermission.denied) {
+            permission = await Geolocator.requestPermission();
+          }
+          if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+            Position position = await Geolocator.getCurrentPosition(
+              desiredAccuracy: LocationAccuracy.high,
+            );
+            lat = position.latitude;
+            long = position.longitude;
+            print('Current location: lat=$lat, long=$long');
+          } else {
+            print('Location permission not granted');
+          }
+        } catch (e) {
+          print('Error getting location: $e');
+        }
+      }
+
+      print('Final coordinates: lat=$lat, long=$long');
 
       context.read<PublicacionBloc>().add(ImagenSeleccionada(base64, longitud: long, latitud: lat));
     }
