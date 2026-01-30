@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/configuracion/entorno.dart';
+import 'core/minio/minio_service.dart';
 import 'core/red/interceptor_jwt.dart';
 import 'funcionalidades/autenticacion/data/repositorio_autenticacion_impl.dart';
 import 'funcionalidades/autenticacion/dominio/repositorio_autenticacion.dart';
@@ -29,6 +30,9 @@ Future<void> inicializarDependencias() async {
 
   final prefs = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => prefs);
+
+  sl.registerLazySingleton<MinioService>(() => MinioService());
+  print('MinioService registered: ${sl.isRegistered<MinioService>()}');
 
   // ---------------------------------------------------------------------------
   // HTTP CLIENT (Dio configurado CORRECTAMENTE)

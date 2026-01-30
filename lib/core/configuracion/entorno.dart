@@ -6,9 +6,9 @@ class ConfiguracionEntorno {
   static String get baseUrl {
     switch (entorno) {
       case Entorno.produccion:
-        return 'http://192.168.1.134:8082/api';
+        return 'http://192.168.1.135:8082/api';
       default:
-        return 'http://192.168.1.134:8082/api';
+        return 'http://192.168.1.135:8082/api';
     }
   }
 }
