@@ -5,7 +5,7 @@ class MinioService {
 
   MinioService() {
     _minioClient = Minio(
-      endPoint: '192.168.1.134',
+      endPoint: '192.168.1.135',
       port: 9000,
       accessKey: 'admin',
       secretKey: 'admin123',
@@ -26,11 +26,9 @@ class MinioService {
   }
 
   String extractBucketAndObject(String imageUrl) {
-    // Assuming imageUrl is the path after bucket, like '628d2a03-0f49-46fe-b069-ec3c48554256/0086469f-8a32-451b-9884-018eb4c4ba0a.jpg'
-    print('Original imageUrl: $imageUrl');
+    // imageUrl is the path after 'publicaciones/', like '628d2a03-0f49-46fe-b069-ec3c48554256/0086469f-8a32-451b-9884-018eb4c4ba0a.jpg'
     final bucket = 'publicaciones';
     final object = imageUrl;
-    print('Extracted bucket: $bucket, object: $object');
     return '$bucket|$object';
   }
 
