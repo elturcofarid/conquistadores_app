@@ -9,7 +9,7 @@ abstract class AutenticacionEvento extends Equatable {
 
 /// Evento cuando el usuario solicita login
 class LoginSolicitado extends AutenticacionEvento {
-  final String email;
+  final String email ;
   final String password;
 
   const LoginSolicitado({

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -21,63 +22,118 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   XFile? _image;
 
   Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(source: source);
-    if (pickedFile != null) {
+    try {
+      // Bottom sheet is closed by onTap, don't close here
+      
+      final pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 1920,
+        maxHeight: 1920,
+        imageQuality: 85,
+      ).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          throw TimeoutException('La cámara tardó demasiado en responder');
+        },
+      );
+      
+      if (pickedFile == null || !mounted) return;
+      
       setState(() {
         _image = pickedFile;
       });
+      
+      // Process image in background to avoid blocking UI
+      await _processImageWithLocation(pickedFile);
+      
+    } catch (e) {
+      print('Error picking image: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al seleccionar imagen: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _processImageWithLocation(XFile pickedFile) async {
+    try {
       final bytes = await File(pickedFile.path).readAsBytes();
       final base64 = base64Encode(bytes);
 
       double? lat, long;
+      
+      // Try to get GPS from EXIF
       try {
         final fileBytes = await File(pickedFile.path).readAsBytes();
         final data = await readExifFromBytes(fileBytes);
         print('EXIF data keys: ${data.keys}');
+        
         if (data.containsKey('GPS GPSLatitude') && data.containsKey('GPS GPSLongitude')) {
           final latRef = data['GPS GPSLatitudeRef']?.printable ?? 'N';
           final lonRef = data['GPS GPSLongitudeRef']?.printable ?? 'E';
           final latValues = data['GPS GPSLatitude']?.values as List?;
           final lonValues = data['GPS GPSLongitude']?.values as List?;
           print('Lat values: $latValues, Lon values: $lonValues');
+          
           if (latValues != null && lonValues != null && latValues.length >= 3 && lonValues.length >= 3) {
             lat = _convertToDecimal(latValues, latRef);
             long = _convertToDecimal(lonValues, lonRef);
             print('GPS from EXIF: lat=$lat, long=$long');
           }
         } else {
-          print('No GPS in EXIF');
+          print('No GPS in EXIF data found');
         }
       } catch (e) {
-        print('Error reading EXIF: $e');
+        print('Error reading EXIF (non-critical): $e');
+        // Continue to try getting current location
       }
 
       // If no GPS from EXIF, try to get current location
       if (lat == null || long == null) {
-        print('Trying to get current location');
+        print('Trying to get current location as fallback...');
         try {
           LocationPermission permission = await Geolocator.checkPermission();
           if (permission == LocationPermission.denied) {
             permission = await Geolocator.requestPermission();
           }
-          if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+          
+          if (permission == LocationPermission.whileInUse || 
+              permission == LocationPermission.always) {
             Position position = await Geolocator.getCurrentPosition(
               desiredAccuracy: LocationAccuracy.high,
+            ).timeout(
+              const Duration(seconds: 10),
+              onTimeout: () {
+                throw TimeoutException('Timeout getting location');
+              },
             );
             lat = position.latitude;
             long = position.longitude;
-            print('Current location: lat=$lat, long=$long');
+            print('Current location obtained: lat=$lat, long=$long');
           } else {
             print('Location permission not granted');
           }
         } catch (e) {
-          print('Error getting location: $e');
+          print('Error getting location (non-critical): $e');
+          // Continue without location
         }
       }
 
       print('Final coordinates: lat=$lat, long=$long');
 
-      context.read<PublicacionBloc>().add(ImagenSeleccionada(base64, longitud: long, latitud: lat));
+      if (mounted) {
+        context.read<PublicacionBloc>().add(
+          ImagenSeleccionada(base64, longitud: long, latitud: lat),
+        );
+      }
+    } catch (e) {
+      print('Error processing image: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error procesando imagen: $e')),
+        );
+      }
     }
   }
 
